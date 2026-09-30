@@ -1,0 +1,45 @@
+{
+  "checked_on": "2026-09-30",
+  "sources": [
+    {
+      "title": "Nmap Reference Guide",
+      "url": "https://nmap.org/book/man.html",
+      "domain": "network",
+      "verification": "verified_entrypoint",
+      "ingestion_status": "not_ingested",
+      "reuse_permission": "review source terms before importing"
+    },
+    {
+      "title": "OWASP Web Security Testing Guide",
+      "url": "https://owasp.org/projects/web-security-testing-guide",
+      "domain": "web",
+      "verification": "verified_entrypoint",
+      "ingestion_status": "not_ingested",
+      "reuse_permission": "review source terms before importing"
+    },
+    {
+      "title": "Burp Suite Documentation",
+      "url": "https://portswigger.net/burp/documentation",
+      "domain": "web",
+      "verification": "verified_entrypoint",
+      "ingestion_status": "not_ingested",
+      "reuse_permission": "review source terms before importing"
+    },
+    {
+      "title": "ZAP Documentation",
+      "url": "https://www.zaproxy.org/docs/",
+      "domain": "web",
+      "verification": "verified_entrypoint",
+      "ingestion_status": "not_ingested",
+      "reuse_permission": "review source terms before importing"
+    },
+    {
+      "title": "Wireshark Documentation",
+      "url": "https://www.wireshark.org/docs/",
+      "domain": "forensics",
+      "verification": "verified_entrypoint",
+      "ingestion_status": "not_ingested",
+      "reuse_permission": "review source terms before importing"
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+# OSINT and geolocation evidence
+
+Separate observed facts from inferred relationships. An IP address can identify network ownership or approximate geography; it does not reliably identify a person or precise physical location. EXIF GPS can be absent, stale, removed or misleading. Preserve the original image and hash before inspecting metadata. Browser geolocation depends on device signals and user-granted access. Wi-Fi databases map observations that may be outdated; an SSID is not unique proof of location. Corroborate independent evidence and record uncertainty rather than assigning exact coordinates without support.

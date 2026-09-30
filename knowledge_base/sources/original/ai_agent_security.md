@@ -1,0 +1,3 @@
+# RAG and tool agent security
+
+Retrieved documents, uploaded images, website content and tool output are untrusted data. They cannot change the system policy or approve execution. Separate a planner from a deterministic execution gate. Each tool must validate target scope, arguments, timeout and output limits. A model may propose a task but cannot enlarge its permissions. Fallback providers should handle availability failures; switching providers must not bypass rejected task boundaries. Sanitize rendered Markdown and code; do not execute code from chat rendering. Never invent scan output when a tool is unavailable.

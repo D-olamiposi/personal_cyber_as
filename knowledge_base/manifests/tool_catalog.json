@@ -1,0 +1,918 @@
+{
+  "tools": [
+    {
+      "name": "Nmap",
+      "aliases": [],
+      "category": "information_gathering",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "Shodan",
+      "aliases": [],
+      "category": "information_gathering",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "Maltego",
+      "aliases": [],
+      "category": "information_gathering",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "theHarvester",
+      "aliases": [
+        "TheHavester"
+      ],
+      "category": "information_gathering",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "Recon-ng",
+      "aliases": [],
+      "category": "information_gathering",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "Amass",
+      "aliases": [],
+      "category": "information_gathering",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "Censys",
+      "aliases": [],
+      "category": "information_gathering",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "OSINT Framework",
+      "aliases": [],
+      "category": "information_gathering",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "Gobuster",
+      "aliases": [],
+      "category": "information_gathering",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "Burp Suite",
+      "aliases": [],
+      "category": "exploitation_assessment",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "Metasploit Framework",
+      "aliases": [],
+      "category": "exploitation_assessment",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "sqlmap",
+      "aliases": [],
+      "category": "exploitation_assessment",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "OWASP ZAP",
+      "aliases": [
+        "ZAP"
+      ],
+      "category": "exploitation_assessment",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "ExploitDB",
+      "aliases": [],
+      "category": "exploitation_assessment",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "Core Impact",
+      "aliases": [],
+      "category": "exploitation_assessment",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "Cobalt Strike",
+      "aliases": [],
+      "category": "exploitation_assessment",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "John the Ripper",
+      "aliases": [],
+      "category": "password_auditing",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "Hydra",
+      "aliases": [
+        "THC-Hydra"
+      ],
+      "category": "password_auditing",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "Hashcat",
+      "aliases": [],
+      "category": "password_auditing",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "Ophcrack",
+      "aliases": [],
+      "category": "password_auditing",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "Medusa",
+      "aliases": [],
+      "category": "password_auditing",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "Cain & Abel",
+      "aliases": [],
+      "category": "password_auditing",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "OpenVAS",
+      "aliases": [],
+      "category": "vulnerability_scanning",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "Nessus",
+      "aliases": [],
+      "category": "vulnerability_scanning",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "AppScan",
+      "aliases": [],
+      "category": "vulnerability_scanning",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "Lynis",
+      "aliases": [],
+      "category": "vulnerability_scanning",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "Retina",
+      "aliases": [],
+      "category": "vulnerability_scanning",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "Nexpose",
+      "aliases": [],
+      "category": "vulnerability_scanning",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "GoPhish",
+      "aliases": [],
+      "category": "social_engineering_simulation",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "HiddenEye",
+      "aliases": [],
+      "category": "social_engineering_simulation",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "SocialFish",
+      "aliases": [],
+      "category": "social_engineering_simulation",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "EvilURL",
+      "aliases": [],
+      "category": "social_engineering_simulation",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "Evilginx",
+      "aliases": [],
+      "category": "social_engineering_simulation",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "Sleuth Kit",
+      "aliases": [
+        "SluethKit"
+      ],
+      "category": "forensics",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "Autopsy",
+      "aliases": [],
+      "category": "forensics",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "Volatility",
+      "aliases": [],
+      "category": "forensics",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "Guymager",
+      "aliases": [],
+      "category": "forensics",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "Foremost",
+      "aliases": [],
+      "category": "forensics",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "Binwalk",
+      "aliases": [],
+      "category": "forensics",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "Wireshark",
+      "aliases": [],
+      "category": "forensics",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "ExifTool",
+      "aliases": [],
+      "category": "forensics",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "Aircrack-ng",
+      "aliases": [],
+      "category": "wireless_assessment",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "Wifite",
+      "aliases": [],
+      "category": "wireless_assessment",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "Kismet",
+      "aliases": [],
+      "category": "wireless_assessment",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "tcpdump",
+      "aliases": [],
+      "category": "wireless_assessment",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "Airsnort",
+      "aliases": [],
+      "category": "wireless_assessment",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "NetStumbler",
+      "aliases": [],
+      "category": "wireless_assessment",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "Reaver",
+      "aliases": [],
+      "category": "wireless_assessment",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "Nikto",
+      "aliases": [],
+      "category": "web_assessment",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "WPScan",
+      "aliases": [],
+      "category": "web_assessment",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "AppSpider",
+      "aliases": [
+        "App Spider"
+      ],
+      "category": "web_assessment",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "MaxMind GeoIP",
+      "aliases": [
+        "MaxMind",
+        "GeoIP"
+      ],
+      "category": "geolocation_osint",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "IPinfo",
+      "aliases": [],
+      "category": "geolocation_osint",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "Metagoofil",
+      "aliases": [],
+      "category": "geolocation_osint",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "Google Earth",
+      "aliases": [],
+      "category": "geolocation_osint",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "SunCalc",
+      "aliases": [],
+      "category": "geolocation_osint",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "DualMaps",
+      "aliases": [],
+      "category": "geolocation_osint",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "WiGLE",
+      "aliases": [],
+      "category": "geolocation_osint",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "Grabify",
+      "aliases": [],
+      "category": "geolocation_osint",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    },
+    {
+      "name": "Seeker",
+      "aliases": [],
+      "category": "geolocation_osint",
+      "documentation_status": "needs_full_document_ingestion",
+      "execution_status": "not_implemented",
+      "availability_status": "requires_current_vendor_verification",
+      "requirements_to_verify": [
+        "supported version",
+        "platform compatibility",
+        "license or API access",
+        "machine-readable output",
+        "scope controls"
+      ]
+    }
+  ],
+  "note": "Category placement is organizational, not a complete feature classification. Cross-category duplicates are canonicalized. Inventory inclusion is not executable support."
+}

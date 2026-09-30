@@ -1,0 +1,32 @@
+{
+  "domains": [
+    "scope_and_evidence",
+    "web_security",
+    "nikky_luxe",
+    "network",
+    "osint",
+    "forensics",
+    "passwords",
+    "wireless",
+    "vulnerability_management",
+    "social_engineering",
+    "cloud_identity",
+    "secure_engineering",
+    "incident_response",
+    "ai_agent_security",
+    "reporting"
+  ],
+  "coverage": "Introductory notes only; deeper sources and evaluation needed.",
+  "additional_domains_to_populate": [
+    "cryptography",
+    "mobile security",
+    "reverse engineering",
+    "malware analysis in isolated labs",
+    "containers and Kubernetes",
+    "Active Directory",
+    "OT and ICS",
+    "hardware and firmware",
+    "privacy engineering",
+    "security architecture"
+  ]
+}

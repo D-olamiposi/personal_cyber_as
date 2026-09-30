@@ -1,0 +1,3 @@
+# Assessment scope and evidence
+
+Define the exact domain, IP ranges, applications, accounts, permitted actions, exclusions, time window and request budget before tool execution. An application hosted on shared infrastructure does not imply permission to assess every service at its hosting IP. Keep source review, passive observation, active probing and state-changing tests distinct. Store evidence with target, timestamp, tool version, sanitized arguments, exit status, output hash and analyst interpretation. A banner or scanner alert is a lead, not proof of exploitation. Finding reports should identify preconditions, impact, confidence, reproduction evidence, remediation and retest results.

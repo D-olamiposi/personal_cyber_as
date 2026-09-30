@@ -1,0 +1,3 @@
+# Web security and SSRF assessment
+
+SSRF occurs when an application can be induced to make server-side requests to unintended destinations. Review every user-controlled URL, image importer, webhook and remote-file fetch. Validate destinations at request time and enforce outbound network controls; redirects and DNS resolution need the same controls. Public HTTP headers cannot establish that SSRF is absent. Assess authentication, session management, object-level authorization, injection handling, upload validation and error disclosure. Test user roles and object ownership using approved test accounts. Missing a header is not by itself proof of a exploitable vulnerability.

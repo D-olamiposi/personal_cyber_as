@@ -1,0 +1,3 @@
+# Network reconnaissance and Nmap interpretation
+
+Nmap is relevant to host and service discovery. Its reference guide documents options, but results require target context. Open means a listener was observed under the probe conditions; filtered suggests filtering or lack of a definitive response. A guessed product version is insufficient to prove a CVE applies. Record DNS answers and actual assessed addresses; obtain a separate scope for hosting infrastructure. Avoid escalating probe intensity because a target does not respond. Compare observed exposure to intended firewall and service configuration.

@@ -1,0 +1,3 @@
+# Nikky Luxe assessment checklist
+
+Project context supplied by owner: Next.js, Supabase, Cloudinary and payments. Verify the actual current source and deployment before relying on these notes. Review server-side admin authorization on each route, Supabase row-level security, service-role key exposure, media signature generation and deletion ownership. Payment completion must be established by server-side provider verification and matched to expected order amount, currency and reference. Webhook processing should verify authenticity and be idempotent. Assess uploaded file types and sizes, output escaping, rate controls and dependency advisories. Scope the application separately from Vercel, Supabase, Cloudinary and payment-provider infrastructure.

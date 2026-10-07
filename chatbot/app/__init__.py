@@ -1,0 +1,1 @@
+"""Cybersecurity assistant application."""

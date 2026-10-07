@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="csrf-token" content="{{ csrf }}">
+<title>Sentinel · Personal Cybersecurity Assistant</title>
+<link rel="stylesheet" href="/static/vendor/highlight.css"><link rel="stylesheet" href="/static/app.css">
+<script defer src="/static/vendor/marked.min.js"></script><script defer src="/static/vendor/purify.min.js"></script><script defer src="/static/vendor/highlight.min.js"></script><script defer src="/static/app.js"></script>
+</head>
+<body>
+<button id="sidebar-backdrop" class="sidebar-backdrop hidden" aria-label="Close conversations"></button>
+<aside class="sidebar" id="sidebar">
+<button id="close-sidebar" class="quiet mobile close-sidebar" aria-label="Close conversations">Close</button>
+<a class="brand" href="/" aria-label="Sentinel home"><span class="brand-icon">S</span><span>Sentinel<small>PERSONAL SECURITY WORKSPACE</small></span></a>
+<button id="new-chat" class="new-chat">+ New conversation</button>
+<p class="nav-label">YOUR CONVERSATIONS</p><nav id="chat-list" aria-label="Conversations"></nav>
+<div class="side-bottom"><span class="status-dot"></span><span id="side-status">Connecting…</span><button id="signout" class="quiet hidden">Sign out</button></div>
+</aside>
+<main>
+<header><button id="menu" class="quiet mobile" aria-label="Toggle conversations">☰</button><div><h1>Security assistant</h1><p>Investigate, understand, improve.</p></div><div class="header-actions"><button id="export" class="quiet">Export chat</button><button id="open-tools" class="outline">Assessment tools <span>↗</span></button></div></header>
+<div id="notice" class="notice" role="status">Loading workspace…</div>
+<section id="messages" class="messages" aria-label="Chat messages" aria-live="polite">
+<div id="welcome" class="welcome"><div class="eyebrow">YOUR SECURITY WORKSPACE</div><h2>A clearer view<br>of your security.</h2><p>Ask a question, examine a screenshot, or assess an approved asset. See the evidence behind each answer.</p><div class="suggestions"><button data-prompt="Explain how I should assess SSRF risks in my Next.js application."><b>Review an application</b><span>Understand SSRF and access controls ↗</span></button><button data-prompt="Explain what Nmap open, closed and filtered port states mean."><b>Understand network evidence</b><span>Interpret scan results with confidence ↗</span></button><button data-prompt="Give me a checklist for verifying payment webhooks and admin authorization in Nikky Luxe."><b>Protect Nikky Luxe</b><span>Review payments and admin access ↗</span></button></div></div>
+</section>
+<section id="job-panel" class="job-panel hidden" aria-live="polite"><div><span class="status-dot pulse"></span><b id="job-title">Working</b><button id="cancel-job" class="quiet">Stop</button></div><pre id="job-log"></pre></section>
+<div class="composer-area"><div id="attachments" class="attachments"></div><form id="composer"><label class="sr-only" for="message">Your message</label><textarea id="message" rows="2" maxlength="12000" placeholder="Ask about security, paste code, or attach an image…" required></textarea><div class="composer-actions"><div><label class="attach" for="image-input" title="Attach PNG, JPEG or WebP">+ <span>Attach image</span></label><input id="image-input" type="file" accept="image/png,image/jpeg,image/webp" multiple hidden><button id="paste" type="button" class="quiet">Paste</button></div><div><label class="tool-permission"><input id="allow-tools" type="checkbox"> Allow scoped tools for this message</label><button id="send" type="submit" class="send">Send ↑</button></div></div></form><p class="composer-note">Check important findings against evidence. Only configured targets and tools can run.</p></div>
+</main>
+<dialog id="login-dialog"><form id="login-form"><div class="eyebrow">PRIVATE WORKSPACE</div><h2>Welcome back.</h2><p>Enter your owner access token to open your conversations.</p><label for="owner-token">Access token</label><input id="owner-token" type="password" autocomplete="current-password" required><p id="login-error" class="error"></p><button class="send" type="submit">Unlock workspace</button></form></dialog>
+<dialog id="tools-dialog"><div class="dialog-heading"><div><div class="eyebrow">BOUNDED ASSESSMENTS</div><h2>Assessment tools</h2></div><button id="close-tools" class="quiet" aria-label="Close tools">✕</button></div><p>Run a supported check against a target in your configured scope. Tools also work without a model API key.</p><div id="scope-summary" class="scope-summary"></div><form id="tool-form"><label for="tool-name">Tool</label><select id="tool-name"><option value="knowledge_search">Knowledge-base search</option><option value="web_headers">HTTPS headers &amp; TLS</option><option value="dns_lookup">DNS lookup</option><option value="nmap_scan">Nmap · TCP connect</option><option value="image_metadata">Attached image metadata</option></select><div id="query-group"><label for="tool-query">Search query</label><input id="tool-query" maxlength="2000" placeholder="SSRF outbound validation"></div><div id="origin-group"><label for="tool-origin">Approved HTTPS origin</label><select id="tool-origin"></select></div><div id="nmap-group" class="hidden"><label for="tool-target">Approved infrastructure IP</label><select id="tool-target"></select><label for="tool-ports">Ports, separated by commas</label><input id="tool-ports" placeholder="80,443"></div><div id="image-group" class="hidden"><label for="tool-image">Attached image</label><select id="tool-image"></select></div><label class="confirm"><input id="tool-confirm" type="checkbox" required> I authorize this check within the configured scope.</label><p id="tool-error" class="error"></p><button class="send" id="run-tool" type="submit">Run check →</button></form></dialog>
+<div id="toast" class="toast hidden" role="status"></div>
+</body></html>

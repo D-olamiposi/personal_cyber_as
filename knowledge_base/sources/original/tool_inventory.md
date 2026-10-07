@@ -1,9 +1,9 @@
 # Requested tool inventory
 
-This inventory records requested coverage. Full documentation and execution adapters are not yet implemented.
+This inventory records requested coverage. Full documentation still needs ingestion. The chatbot has a bounded Nmap adapter requiring installation and separately approved IP scope; other third-party execution adapters remain unimplemented.
 
 ## Nmap
-Category: information_gathering. Aliases: none recorded. Documentation: needs ingestion. Execution: not implemented.
+Category: information_gathering. Aliases: none recorded. Documentation: needs ingestion. Execution: bounded TCP-connect adapter in chatbot; requires installation and approved literal IP scope.
 
 ## Shodan
 Category: information_gathering. Aliases: none recorded. Documentation: needs ingestion. Execution: not implemented.

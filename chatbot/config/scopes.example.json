@@ -1,0 +1,6 @@
+{
+  "web_origins": [],
+  "nmap_targets": [],
+  "nmap_ports": [80, 443],
+  "note": "Add exact owned HTTPS origins and separately approved literal infrastructure IPs. There are no wildcard scopes. Website ownership does not authorize scanning shared hosting IPs."
+}

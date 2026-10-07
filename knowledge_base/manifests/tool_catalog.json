@@ -5,7 +5,7 @@
       "aliases": [],
       "category": "information_gathering",
       "documentation_status": "needs_full_document_ingestion",
-      "execution_status": "not_implemented",
+      "execution_status": "bounded_tcp_connect_adapter_implemented_requires_install_and_scope",
       "availability_status": "requires_current_vendor_verification",
       "requirements_to_verify": [
         "supported version",
@@ -914,5 +914,5 @@
       ]
     }
   ],
-  "note": "Category placement is organizational, not a complete feature classification. Cross-category duplicates are canonicalized. Inventory inclusion is not executable support."
+  "note": "Inventory inclusion does not mean executable support. Nmap has a bounded adapter; other requested third-party tools do not yet have adapters. Additional local knowledge, HTTPS, DNS and image-metadata adapters are documented in the project README."
 }

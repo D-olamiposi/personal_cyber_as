@@ -1,0 +1,46 @@
+{
+  "text": [
+    {
+      "name": "groq-main",
+      "base_url": "https://api.groq.com/openai/v1",
+      "key_env": "GROQ_API_KEY",
+      "model_env": "GROQ_CHAT_MODEL",
+      "tools": true,
+      "token_field": "max_completion_tokens"
+    },
+    {
+      "name": "groq-fallback",
+      "base_url": "https://api.groq.com/openai/v1",
+      "key_env": "GROQ_API_KEY",
+      "model_env": "GROQ_FALLBACK_MODEL",
+      "tools": true,
+      "token_field": "max_completion_tokens"
+    },
+    {
+      "name": "xai-text-fallback",
+      "base_url": "https://api.x.ai/v1",
+      "key_env": "XAI_API_KEY",
+      "model_env": "XAI_CHAT_MODEL",
+      "tools": true,
+      "token_field": "max_tokens"
+    }
+  ],
+  "vision": [
+    {
+      "name": "xai-vision",
+      "base_url": "https://api.x.ai/v1",
+      "key_env": "XAI_API_KEY",
+      "model_env": "XAI_VISION_MODEL",
+      "tools": false,
+      "token_field": "max_tokens"
+    },
+    {
+      "name": "groq-vision-fallback",
+      "base_url": "https://api.groq.com/openai/v1",
+      "key_env": "GROQ_API_KEY",
+      "model_env": "GROQ_VISION_MODEL",
+      "tools": false,
+      "token_field": "max_completion_tokens"
+    }
+  ]
+}

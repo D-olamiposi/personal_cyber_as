@@ -1,0 +1,5 @@
+{
+  "web_origins": ["https://nikky-luxe.vercel.app"],
+  "nmap_targets": [],
+  "nmap_ports": [80, 443]
+}

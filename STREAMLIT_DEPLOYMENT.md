@@ -31,7 +31,7 @@ No cloud deployment has been performed as part of delivering this archive. Strea
 
 ## Interface features
 
-- Native chat with Markdown tables, highlighted fenced code, and built-in code-copy controls. The Copy message expander presents the full original Markdown in a copyable code widget. Raw HTML is not enabled.
+- Native chat with Markdown tables, highlighted fenced code, and built-in code-copy controls. The Message actions expander presents the full original Markdown in a copyable code widget. Raw HTML is not enabled.
 - Validated PNG/JPEG/WebP uploads; up to three images, 8 MB each, with resized metadata-stripped model previews. Remove pending uploads using the uploader controls. Browser clipboard image pasting is not implemented in this native Streamlit interface; upload screenshots as files.
 - Primary/fallback text and vision provider chains are unchanged. Only currently attached images are sent for visual analysis.
 - Manage targets applies changes without restarting and stores them in private runtime state. Scope changes are blocked during pending jobs.
@@ -67,3 +67,7 @@ python tests/streamlit_smoke.py
 ```
 
 The Streamlit smoke script uses a temporary runtime and test owner token; it does not call model providers or scan websites. Backend tests additionally need Flask installed from `chatbot/requirements.txt`.
+
+## Simplified navigation
+
+Choose Chat, Assessments, or Targets from the sidebar. Chat shows messages and the composer; attachments are optional. Assessments contains the supported manual checks with readable result summaries. Targets contains saved scope management. Technical output, hashes, model details and copyable message text remain accessible in collapsed sections.

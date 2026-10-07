@@ -56,3 +56,7 @@ An additional mocked Groq SDK test confirms the API root URL, disabled SDK retri
 ## Streamlit conversion — 2026-10-07
 
 The Streamlit AppTest flow verifies the owner login, target creation, local knowledge-tool submission, saved evidence display, and hash verification without live provider requests. 38 backend and eight knowledge-base tests pass (46 total), including enforcement of disabled Nmap execution. Browser pixel/layout and clipboard actions, hosted deployment, live provider calls and live Nmap execution have not been verified by this conversion.
+
+## Simplified Streamlit navigation — 2026-10-07
+
+The AppTest flow verifies navigation between Chat, Targets, and Assessments, target addition, local knowledge search and hash verification. All 46 existing backend/knowledge tests pass. Native browser layout remains unverified. Permissions, provider routing and executable tool coverage are unchanged.

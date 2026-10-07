@@ -79,6 +79,7 @@ busy = active is not None
 with st.sidebar:
     st.title("Sentinel")
     st.caption("Personal security workspace")
+    view = st.radio("Workspace", ["Chat", "Assessments", "Targets"], key="workspace_view")
     if st.button("New conversation", disabled=busy):
         st.session_state.chat_id = store.create_chat()
         st.session_state.upload_version = st.session_state.get("upload_version", 0) + 1
@@ -96,11 +97,15 @@ with st.sidebar:
         st.rerun()
     st.caption("Cloud runtime files are not durable backups. Download important evidence and conversations.")
 
-st.title("Security assistant")
-text_models = app.settings.providers["text"]
-st.caption("Models: " + (", ".join(item.name for item in text_models) or "No text API keys configured"))
+st.title({"Chat": "Chat", "Assessments": "Run an assessment", "Targets": "Manage targets"}[view])
+if view == "Chat" and not app.settings.providers["text"]:
+    st.info("Add a model API key to enable chat. Local knowledge search is available under Assessments.")
+if view == "Targets":
+    st.caption("Add approved targets once, then select them when running checks.")
+if view == "Assessments":
+    st.caption("Choose a check, select an approved target, then run it.")
 
-with st.expander("Manage targets"):
+if view == "Targets":
     capabilities = tools.capabilities()
     kind = st.selectbox("Target type", ["web", "nmap"], format_func=lambda value: "Website · HTTPS origin" if value == "web" else "Nmap · infrastructure IP")
     if kind == "nmap":
@@ -135,30 +140,36 @@ with st.expander("Manage targets"):
                 except (ValueError, OSError):
                     st.error("Target could not be removed. Finish active jobs and try again.")
 
-version = st.session_state.get("upload_version", 0)
-files = st.file_uploader("Attach images", type=["png", "jpg", "jpeg", "webp"], accept_multiple_files=True, disabled=busy, key="images_" + str(version))
 image_ids = []
 upload_ok = True
-if len(files) > 3:
-    st.error("Attach at most three images.")
-    upload_ok = False
-else:
-    saved_uploads = st.session_state.setdefault("uploads", {})
-    for file in files:
-        digest = hashlib.sha256(file.getvalue()).hexdigest()
-        try:
-            if digest not in saved_uploads:
-                saved_uploads[digest] = app.uploads.save(SimpleNamespace(stream=io.BytesIO(file.getvalue())))
-            record = saved_uploads[digest]
-            image_ids.append(record["id"])
-            st.image(store.get_upload(record["id"])["preview"], width=140)
-        except ValueError as exc:
-            st.error(str(exc)); upload_ok = False
-
-with st.expander("Assessment tools"):
+version = st.session_state.get("upload_version", 0)
+if view in ("Chat", "Assessments"):
+    version = st.session_state.get("upload_version", 0)
+    with st.expander("Attach an image"):
+        files = st.file_uploader("Attach images", type=["png", "jpg", "jpeg", "webp"], accept_multiple_files=True, disabled=busy, key="images_" + str(version))
+    image_ids = []
+    upload_ok = True
+    if len(files) > 3:
+        st.error("Attach at most three images.")
+        upload_ok = False
+    else:
+        saved_uploads = st.session_state.setdefault("uploads", {})
+        for file in files:
+            digest = hashlib.sha256(file.getvalue()).hexdigest()
+            try:
+                if digest not in saved_uploads:
+                    saved_uploads[digest] = app.uploads.save(SimpleNamespace(stream=io.BytesIO(file.getvalue())))
+                record = saved_uploads[digest]
+                image_ids.append(record["id"])
+                st.image(store.get_upload(record["id"])["preview"], width=140)
+            except ValueError as exc:
+                st.error(str(exc)); upload_ok = False
+    
+if view == "Assessments":
     capabilities = tools.capabilities()
     names = [item["name"] for item in capabilities["tools"] if item["available"]]
-    tool = st.selectbox("Tool", names)
+    labels={"knowledge_search":"Search knowledge base", "web_headers":"HTTPS headers and TLS", "dns_lookup":"DNS lookup", "nmap_scan":"Nmap port check", "image_metadata":"Image information"}
+    tool = st.selectbox("Tool", names, format_func=lambda value: labels[value])
     args = {}
     valid = True
     if tool == "knowledge_search":
@@ -183,40 +194,68 @@ with st.expander("Assessment tools"):
         except ValueError as exc:
             st.error(str(exc))
 
-for row in store.history(chat):
-    with st.chat_message(row["role"]):
-        with st.expander("Copy message"):
-            st.code(row["content"], language=None)
-        st.markdown(row["content"], unsafe_allow_html=False)
-        for key in row["attachments"]:
-            st.image(store.get_upload(key)["preview"], width=180)
-        if row["refs"]:
-            with st.expander("Retrieved references"):
-                for ref in row["refs"]:
-                    st.text("[KB:" + ref["citation_id"] + "] " + ref["title"] + " — " + ref["origin"])
-        if row["model"]:
-            st.caption(row["model"])
-
-records = store.chat_evidence(chat)
-if records:
-    with st.expander("Recorded assessment evidence", expanded=True):
-        for record in records:
-            st.markdown("**" + record["tool"] + "**")
-            st.caption("Evidence ID: " + record["id"] + " · " + record["created"])
-            st.caption("SHA-256 of the complete JSON download")
-            st.code(record["sha256"], language=None)
-            path = tools.evidence_dir / (record["id"] + ".json")
-            if path.is_file():
-                raw = path.read_bytes()
-                st.download_button("Download evidence", raw, file_name="evidence-" + record["id"] + ".json", mime="application/json", key="download_" + record["id"])
-                if st.button("Verify evidence", key="verify_" + record["id"]):
-                    if hmac.compare_digest(hashlib.sha256(raw).hexdigest(), record["sha256"]):
-                        st.success("Verified: download bytes match the saved SHA-256.")
+if view in ("Chat", "Assessments"):
+    for row in store.history(chat):
+        with st.chat_message(row["role"]):
+            with st.expander("Message actions"):
+                st.code(row["content"], language=None)
+            if row["model"] == "tool adapter" and "```json\n" in row["content"]:
+                try:
+                    result = json.loads(row["content"].split("```json\n", 1)[1].rsplit("```", 1)[0])
+                    st.success("Check completed. Evidence is available below.")
+                    if "passages" in result:
+                        if not result["passages"]:
+                            st.info("No matching knowledge passages.")
+                        for passage in result["passages"]:
+                            st.markdown("**" + passage["title"] + "**")
+                            st.markdown(passage["text"], unsafe_allow_html=False)
+                            st.caption("Source: " + passage["origin"])
+                    elif "http_status" in result:
+                        st.write("HTTP status:", result["http_status"])
+                        st.write("TLS verified:", result["tls_verified"])
+                        st.write("Certificate expires:", result.get("certificate_expires"))
+                        with st.expander("Headers and technical details"):
+                            st.json(result)
+                    elif "addresses" in result:
+                        st.write("Resolved IP addresses:", ", ".join(result["addresses"]))
+                        st.caption(result.get("interpretation", ""))
                     else:
-                        st.error("Hash mismatch: evidence differs from the saved record.")
+                        with st.expander("Technical result"):
+                            st.json(result)
+                except (ValueError, KeyError, TypeError):
+                    st.markdown(row["content"], unsafe_allow_html=False)
             else:
-                st.warning("Evidence file is unavailable in this runtime.")
-
+                st.markdown(row["content"], unsafe_allow_html=False)
+            for key in row["attachments"]:
+                st.image(store.get_upload(key)["preview"], width=180)
+            if row["refs"]:
+                with st.expander("Retrieved references"):
+                    for ref in row["refs"]:
+                        st.text("[KB:" + ref["citation_id"] + "] " + ref["title"] + " — " + ref["origin"])
+            if row["model"]:
+                with st.expander("Response details"):
+                    st.caption(row["model"])
+    
+    records = store.chat_evidence(chat)
+    if records:
+        with st.expander("Evidence downloads", expanded=False):
+            for record in records:
+                st.markdown("**" + record["tool"] + "**")
+                st.caption("Evidence ID: " + record["id"] + " · " + record["created"])
+                st.caption("SHA-256 of the complete JSON download")
+                st.code(record["sha256"], language=None)
+                path = tools.evidence_dir / (record["id"] + ".json")
+                if path.is_file():
+                    raw = path.read_bytes()
+                    st.download_button("Download evidence", raw, file_name="evidence-" + record["id"] + ".json", mime="application/json", key="download_" + record["id"])
+                    if st.button("Verify evidence", key="verify_" + record["id"]):
+                        if hmac.compare_digest(hashlib.sha256(raw).hexdigest(), record["sha256"]):
+                            st.success("Verified: download bytes match the saved SHA-256.")
+                        else:
+                            st.error("Hash mismatch: evidence differs from the saved record.")
+                else:
+                    st.warning("Evidence file is unavailable in this runtime.")
+    
 if active:
     @st.fragment(run_every="1s")
     def progress():
@@ -234,13 +273,14 @@ if active:
 
 if st.session_state.get("last_error"):
     st.error(st.session_state.pop("last_error"))
-allow_tools = st.checkbox("Allow scoped tools for this message", disabled=busy)
-question = st.chat_input("Ask about security or attach an image above…", disabled=busy or not upload_ok, max_chars=12000)
-if question:
-    try:
-        engine.submit(chat, {"kind": "chat", "message": question, "image_ids": image_ids, "allow_tools": allow_tools})
-        st.session_state.upload_version = version + 1
-        st.rerun()
-    except ValueError as exc:
-        st.error(str(exc))
-
+if view == "Chat":
+    allow_tools = st.checkbox("Allow scoped tools for this message", disabled=busy)
+    question = st.chat_input("Ask about security or attach an image above…", disabled=busy or not upload_ok, max_chars=12000)
+    if question:
+        try:
+            engine.submit(chat, {"kind": "chat", "message": question, "image_ids": image_ids, "allow_tools": allow_tools})
+            st.session_state.upload_version = version + 1
+            st.rerun()
+        except ValueError as exc:
+            st.error(str(exc))
+    

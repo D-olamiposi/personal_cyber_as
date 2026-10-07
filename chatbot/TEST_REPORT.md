@@ -46,3 +46,9 @@ Tests establish these bounded behaviors; they do not establish absence of all de
 ## Recovery verification — 2026-09-30
 
 The interrupted deliverable was recovered from its saved archive. All 29 backend tests and eight knowledge-base tests were rerun successfully. JavaScript syntax checking passed. A fresh headless Chromium run could not start because this environment has no Chromium executable; the prior browser results above were retained as historical results, not rerun claims. Live API calls, Nmap binary execution and target assessments remain unverified.
+
+## Target management and evidence update — 2026-10-07
+
+37 backend tests plus eight knowledge-base tests pass (45 total). Seven new backend tests exercise immediate authorization, persistence, duplicate normalization, owner/CSRF enforcement, invalid target rejection, separate Nmap scope, revocation, active-job conflicts, and failed-write rollback. Existing evidence tests compare download bytes with the persisted SHA-256. JavaScript syntax checking passes. The user's Groq SDK fix is retained. No live provider call or website scan was made during this update. Browser verification status is recorded separately below.
+
+An additional mocked Groq SDK test confirms the API root URL, disabled SDK retries, and preserved tool payload. Fresh browser checks could not run: Chromium is not installed and its download failed. Desktop/mobile layout and clipboard/Web Crypto controls therefore need a browser check after installation; no fresh browser success is claimed.

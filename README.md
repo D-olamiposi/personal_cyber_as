@@ -97,7 +97,7 @@ Use a disposable owned lab target to verify it before operational assessments. F
 
 ## Configure target scope
 
-Edit `chatbot/config/scopes.json`; restart to apply it. Scopes are empty by default. An example web assessment configuration is:
+Use **Manage targets** in the header to add or remove an approved website origin or separately approved Nmap IP. Changes take effect immediately and are saved privately in `chatbot/runtime/managed-scopes.json` (or your configured data directory). Finish or cancel active jobs before changing targets. The model cannot add targets. On first startup, `chatbot/config/scopes.json` supplies initial targets; after the first UI change, the saved runtime configuration takes precedence. Keep runtime files when upgrading to preserve targets and conversations. Initial targets depend on your configuration file. An example web assessment configuration is:
 
 ```json
 {
@@ -140,3 +140,11 @@ python -m unittest discover -s chatbot/tests -v
 ```
 
 See `chatbot/TEST_REPORT.md` for verified behavior and remaining integration checks. This is functioning application code with bounded adapters; it is not a claim of zero defects or complete cybersecurity expertise.
+
+## Evidence hashes
+
+Each recorded evidence card displays the backend SHA-256 of the exact JSON download bytes, its evidence ID, timestamp, and tool name. Use **Copy SHA-256** or **Verify download** to compare the download with the saved digest. Verification requires a secure browser context (HTTPS or localhost). The hash is external to the JSON file to avoid a self-referential digest. A matching hash establishes byte consistency with the stored record, not that the assessment is complete or its conclusions correct.
+
+## Updating an existing installation
+
+Stop the app and copy the updated `chatbot/app/tools.py`, `chatbot/app/web.py`, `chatbot/app/engine.py`, `chatbot/static/app.js`, `chatbot/static/app.css`, and `chatbot/templates/index.html` into your project. Keep your existing `.env`, provider configuration, `scopes.json`, and `chatbot/runtime/`. The uploaded Groq SDK transport fix is retained. Install requirements, restart once for the code update, and refresh the browser. Subsequent target changes do not need a restart.

@@ -46,9 +46,37 @@ function renderMessage(row){
 }
 function renderEvidence(records){
   if(!records?.length)return;
-  const list=document.createElement('details');list.className='sources';
+  const list=document.createElement('details');list.className='sources evidence-list';list.open=true;
   const title=document.createElement('summary');title.textContent='Recorded assessment evidence · '+records.length;list.append(title);
-  for(const record of records){const line=document.createElement('p');const link=document.createElement('a');link.href='/api/evidence/'+record.id;link.textContent='Download '+record.tool+' evidence';link.download='';line.append(link);list.append(line);}
+  for(const record of records){
+    if(!/^[a-f0-9]{32}$/.test(record.id))continue;
+    const card=document.createElement('div');card.className='evidence-card';
+    const link=document.createElement('a');link.href='/api/evidence/'+record.id;link.textContent='Download '+record.tool+' evidence';link.download='';card.append(link);
+    const stamp=document.createElement('p');stamp.textContent='Evidence ID: '+record.id+' · '+record.created;card.append(stamp);
+    if(/^[a-f0-9]{64}$/.test(record.sha256)){
+      const label=document.createElement('p');label.textContent='SHA-256 of downloaded JSON';
+      const hash=document.createElement('code');hash.className='evidence-hash';hash.textContent=record.sha256;
+      const buttons=document.createElement('div');buttons.className='evidence-actions';
+      const copyButton=document.createElement('button');copyButton.type='button';copyButton.className='quiet';copyButton.textContent='Copy SHA-256';copyButton.addEventListener('click',()=>copy(record.sha256,copyButton));
+      const verify=document.createElement('button');verify.type='button';verify.className='quiet';verify.textContent='Verify download';
+      const result=document.createElement('p');result.setAttribute('role','status');
+      verify.addEventListener('click',async()=>{
+        verify.disabled=true;result.textContent='Checking downloaded bytes…';
+        try{
+          if(!window.crypto?.subtle)throw Error('Verification needs a secure browser connection.');
+          const response=await fetch(link.href,{credentials:'same-origin',cache:'no-store'});
+          if(!response.ok)throw Error('Evidence download failed.');
+          const digest=await crypto.subtle.digest('SHA-256',await response.arrayBuffer());
+          const actual=[...new Uint8Array(digest)].map(x=>x.toString(16).padStart(2,'0')).join('');
+          result.textContent=actual===record.sha256?'Verified: downloaded bytes match the saved SHA-256.':'Mismatch: downloaded bytes differ from the saved SHA-256.';
+          result.classList.toggle('error',actual!==record.sha256);
+        }catch(error){result.textContent=error.message;result.classList.add('error');}
+        finally{verify.disabled=false;}
+      });
+      buttons.append(copyButton,verify);card.append(label,hash,buttons,result);
+    }
+    list.append(card);
+  }
   $('messages').append(list);
 }
 async function loadChats(){const data=await api('/api/chats');$('chat-list').replaceChildren();for(const chat of data.chats){const button=document.createElement('button');button.textContent=chat.title;button.classList.toggle('active',chat.id===currentChat);button.addEventListener('click',()=>{if(activeJob){toast('Stop or finish the current job before switching conversations.');return;}selectChat(chat.id).catch(e=>toast(e.message));});$('chat-list').append(button);}return data.chats;}
@@ -90,7 +118,7 @@ async function refreshStatus(){
   $('scope-summary').textContent='Web origins: '+(scopes.web_origins.join(', ')||'none configured')+'\nNmap IPs: '+(scopes.nmap_targets.join(', ')||'none configured')+'\nApproved ports: '+scopes.nmap_ports.join(', ')+'\nNmap: '+(scopes.tools.find(t=>t.name==='nmap_scan').available?'installed':'not installed');
   $('tool-origin').replaceChildren();for(const origin of scopes.web_origins){const option=document.createElement('option');option.value=origin;option.textContent=origin;$('tool-origin').append(option);}
   $('tool-target').replaceChildren();for(const target of scopes.nmap_targets){const option=document.createElement('option');option.value=target;option.textContent=target;$('tool-target').append(option);}
-  $('tool-ports').value=scopes.nmap_ports.join(',');updateToolFields();
+  $('tool-ports').value=scopes.nmap_ports.join(',');updateToolFields();renderTargets();
 }
 function updateToolFields(){const name=$('tool-name').value;$('query-group').classList.toggle('hidden',name!=='knowledge_search');$('origin-group').classList.toggle('hidden',!['web_headers','dns_lookup'].includes(name));$('nmap-group').classList.toggle('hidden',name!=='nmap_scan');$('image-group').classList.toggle('hidden',name!=='image_metadata');$('tool-image').replaceChildren();for(const image of attachments){const option=document.createElement('option');option.value=image.id;option.textContent=image.metadata.format+' · '+image.metadata.width+' × '+image.metadata.height;$('tool-image').append(option);}}
 $('composer').addEventListener('submit',async event=>{
@@ -124,3 +152,33 @@ $('signout').addEventListener('click',async()=>{try{await api('/api/logout',{met
 async function boot(){const session=await api('/api/session');if(!session.authenticated){$('login-dialog').showModal();return;}$('signout').classList.toggle('hidden',!session.login_required);await refreshStatus();const chats=await loadChats();let selected=localStorage.getItem('sentinel-chat');if(!chats.some(c=>c.id===selected))selected=chats[0]?.id;if(!selected)selected=(await api('/api/chats',{method:'POST',body:{}})).id;await selectChat(selected);}
 if(!window.marked||!window.DOMPurify||!window.hljs){$('notice').textContent='Required local UI libraries are missing. See static/vendor/README.md.';}else boot().catch(error=>{$('notice').textContent=error.message;});
 if(window.ResizeObserver)new ResizeObserver(entries=>document.documentElement.style.setProperty('--composer-height',entries[0].target.getBoundingClientRect().height+'px')).observe(document.querySelector('.composer-area'));
+
+function renderTargets(){
+  const box=$('saved-targets');box.replaceChildren();
+  if(!statusData)return;
+  for(const [kind,title,values] of [['web','Websites',statusData.capabilities.web_origins],['nmap','Nmap IPs',statusData.capabilities.nmap_targets]]){
+    const heading=document.createElement('h3');heading.textContent=title;box.append(heading);
+    if(!values.length){const empty=document.createElement('p');empty.textContent='No targets saved.';box.append(empty);}
+    for(const value of values){
+      const row=document.createElement('div');row.className='target-row';const name=document.createElement('span');name.textContent=value;
+      const remove=document.createElement('button');remove.type='button';remove.className='quiet';remove.textContent='Remove';remove.setAttribute('aria-label','Remove '+value);
+      remove.addEventListener('click',async()=>{remove.disabled=true;try{await api('/api/targets',{method:'POST',body:{action:'remove',kind,value}});await refreshStatus();toast('Target removed.');}catch(error){$('target-error').textContent=error.message;remove.disabled=false;}});
+      row.append(name,remove);box.append(row);
+    }
+  }
+}
+$('open-targets').addEventListener('click',()=>{$('target-error').textContent='';renderTargets();$('targets-dialog').showModal();});
+$('close-targets').addEventListener('click',()=>$('targets-dialog').close());
+$('target-kind').addEventListener('change',()=>{
+  const network=$('target-kind').value==='nmap';$('target-value').value='';$('target-confirm').checked=false;
+  $('target-value').placeholder=network?'192.168.1.20':'https://your-website.example';
+  $('target-help').textContent=network?'Approve a literal infrastructure IP separately. Website ownership does not grant permission to scan shared hosting IPs. Ports use your configured Nmap list.':'Use the HTTPS origin only, without a page path.';
+});
+$('target-form').addEventListener('submit',async event=>{
+  event.preventDefault();$('target-error').textContent='';$('save-target').disabled=true;
+  try{
+    await api('/api/targets',{method:'POST',body:{action:'add',kind:$('target-kind').value,value:$('target-value').value.trim(),confirmed:$('target-confirm').checked}});
+    await refreshStatus();$('target-value').value='';$('target-confirm').checked=false;toast('Target saved. Ready for checks.');
+  }catch(error){$('target-error').textContent=error.message;}
+  finally{$('save-target').disabled=false;}
+});

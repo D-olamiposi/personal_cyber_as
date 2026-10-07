@@ -3,6 +3,9 @@ import hashlib
 import http.client
 import ipaddress
 import json
+import os
+import re
+import threading
 from pathlib import Path
 import shutil
 import socket
@@ -27,6 +30,14 @@ def canonical_origin(value):
     if u.port not in (None,443):raise ScopeError('Web adapter supports HTTPS port 443 only')
     host=u.hostname.encode('idna').decode('ascii').lower()
     if host.endswith('.') or any(c.isspace() for c in host):raise ScopeError('Invalid hostname')
+    try:
+        address=ipaddress.ip_address(host)
+        if not address.is_global:raise ScopeError('Web origins must use public destinations')
+    except ValueError as exc:
+        if isinstance(exc,ScopeError):raise
+        labels=host.split('.')
+        if len(host)>253 or len(labels)<2 or any(not re.fullmatch(r'[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?',label) for label in labels):
+            raise ScopeError('Use an exact public hostname; wildcards are not supported')
     return 'https://'+('['+host+']' if ':' in host else host)
 
 class Scope:
@@ -90,8 +101,38 @@ SCHEMAS=[
 
 class ToolRunner:
     def __init__(self,settings,store):
-        self.settings=settings;self.store=store;self.scope=Scope(settings.scopes)
+        self.settings=settings;self.store=store
+        self.scope_lock=threading.Lock()
+        self.scope_file=settings.data_dir/'managed-scopes.json'
+        saved=json.loads(self.scope_file.read_text()) if self.scope_file.exists() else settings.scopes
+        self.scope=Scope(saved)
         self.evidence_dir=settings.data_dir/'evidence';self.evidence_dir.mkdir(exist_ok=True)
+    def manage_target(self,action,kind,value,confirmed=False):
+        if action not in ('add','remove') or kind not in ('web','nmap'):
+            raise ScopeError('Choose add/remove and web/nmap')
+        if action=='add' and confirmed is not True:
+            raise ScopeError('Confirm that this target is within your authorized assessment scope')
+        target=canonical_origin(value) if kind=='web' else Scope.valid_scan_ip(value)
+        with self.scope_lock:
+            config={'web_origins':sorted(self.scope.origins),'nmap_targets':sorted(self.scope.targets),'nmap_ports':sorted(self.scope.ports)}
+            field='web_origins' if kind=='web' else 'nmap_targets'
+            values=set(config[field])
+            if action=='add':values.add(target)
+            else:values.discard(target)
+            if len(values)>100:raise ScopeError('Save at most 100 targets of each type')
+            config[field]=sorted(values)
+            updated=Scope(config)
+            # Persist first; only publish the new scope after a successful atomic write.
+            descriptor,path=tempfile.mkstemp(prefix='.scopes-',dir=self.settings.data_dir)
+            try:
+                with os.fdopen(descriptor,'w',encoding='utf-8') as file:
+                    json.dump(config,file,indent=2);file.write('\n');file.flush();os.fsync(file.fileno())
+                os.replace(path,self.scope_file)
+            finally:
+                if os.path.exists(path):os.unlink(path)
+            self.scope=updated
+            self.settings.scopes=config
+        return self.capabilities()
     def capabilities(self):
         return {'tools':[{'name':s['function']['name'],'available':s['function']['name']!='nmap_scan' or bool(shutil.which('nmap'))} for s in SCHEMAS],
                 'web_origins':sorted(self.scope.origins),'nmap_targets':sorted(self.scope.targets),'nmap_ports':sorted(self.scope.ports)}

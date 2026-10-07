@@ -101,6 +101,16 @@ def create_app(settings=None,router=None):
     @app.get('/api/status')
     def status():
         return jsonify({'knowledge':retriever.status(),'models':{kind:[{'name':p.name,'model':p.model} for p in chain] for kind,chain in settings.providers.items()},'capabilities':tools.capabilities(),'pending_jobs':store.pending(),'mode':'single owner','vision_tools':False})
+    @app.post('/api/targets')
+    def manage_targets():
+        data=body()
+        if set(data)-{'action','kind','value','confirmed'}:abort(400,description='Unknown target fields')
+        # Target management is an owner UI action, never an LLM tool.
+        with engine.lock:
+            if store.pending():abort(409,description='Finish or stop active jobs before changing targets')
+            try:capabilities=tools.manage_target(data.get('action'),data.get('kind'),data.get('value'),data.get('confirmed',False))
+            except OSError:abort(503,description='Targets could not be saved; the previous scope remains active')
+        return jsonify({'capabilities':capabilities})
     @app.get('/api/chats')
     def chats():return jsonify({'chats':store.chats()})
     @app.post('/api/chats')

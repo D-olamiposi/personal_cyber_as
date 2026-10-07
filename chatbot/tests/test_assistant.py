@@ -151,6 +151,59 @@ class WebTests(unittest.TestCase):
         self.assertEqual(self.post('/api/login',{'token':self.settings.access_token}).status_code,200)
         self.assertEqual(self.client.get('/api/chats').status_code,200)
         self.post('/api/logout',{});self.assertEqual(self.client.get('/api/chats').status_code,401)
+    def test_target_add_is_immediate_and_survives_restart(self):
+        payload={'action':'add','kind':'web','value':'https://NIKKY-LUXE.vercel.app/','confirmed':True}
+        self.assertEqual(self.post('/api/targets',payload).status_code,200)
+        self.app.extensions['tools'].validate('web_headers',{'origin':'https://nikky-luxe.vercel.app'},[])
+        self.post('/api/targets',payload)
+        config=json.loads((self.settings.data_dir/'managed-scopes.json').read_text())
+        self.assertEqual(config['web_origins'].count('https://nikky-luxe.vercel.app'),1)
+        from app.tools import ToolRunner
+        restored=ToolRunner(self.settings,self.app.extensions['store'])
+        self.assertIn('https://nikky-luxe.vercel.app',restored.capabilities()['web_origins'])
+        self.assertEqual(restored.capabilities()['nmap_targets'],['127.0.0.1'])
+
+    def test_target_management_requires_authorization_and_csrf(self):
+        payload={'action':'add','kind':'web','value':'https://new.example'}
+        self.assertEqual(self.post('/api/targets',payload).status_code,400)
+        payload['confirmed']=True
+        self.assertEqual(self.client.post('/api/targets',json=payload).status_code,403)
+        self.settings.access_token='owner-secret'
+        self.assertEqual(self.post('/api/targets',payload).status_code,401)
+
+    def test_invalid_target_and_model_scope_expansion_rejected(self):
+        for value in ['https://*.example.com','http://example.com','https://example.com/admin','https://127.0.0.1','https://169.254.169.254','https://example.com@evil.example']:
+            with self.subTest(value=value):
+                response=self.post('/api/targets',{'action':'add','kind':'web','value':value,'confirmed':True})
+                self.assertEqual(response.status_code,400)
+        schemas=self.app.extensions['tools'].schemas()
+        self.assertNotIn('manage_targets',[item['function']['name'] for item in schemas])
+
+    def test_remove_target_revokes_scope(self):
+        self.assertEqual(self.post('/api/targets',{'action':'remove','kind':'web','value':'https://example.com'}).status_code,200)
+        with self.assertRaises(ScopeError):self.app.extensions['tools'].validate('dns_lookup',{'origin':'https://example.com'},[])
+
+    def test_failed_scope_save_preserves_active_scope(self):
+        before=self.app.extensions['tools'].capabilities()
+        with patch('app.tools.os.replace',side_effect=OSError('fixture write failure')):
+            with self.assertRaises(OSError):self.app.extensions['tools'].manage_target('add','web','https://new.example',True)
+        self.assertEqual(self.app.extensions['tools'].capabilities(),before)
+        self.assertFalse((self.settings.data_dir/'managed-scopes.json').exists())
+
+    def test_scope_changes_rejected_while_job_pending(self):
+        store=self.app.extensions['store'];key=store.create_job(self.chat,{'kind':'tool'})
+        response=self.post('/api/targets',{'action':'add','kind':'web','value':'https://new.example','confirmed':True})
+        self.assertEqual(response.status_code,409)
+        store.set_job(key,'cancelled')
+        self.assertEqual(self.post('/api/targets',{'action':'add','kind':'web','value':'https://new.example','confirmed':True}).status_code,200)
+
+    def test_nmap_targets_are_separate_and_invalid_ip_rejected(self):
+        self.assertEqual(self.post('/api/targets',{'action':'add','kind':'nmap','value':'192.168.1.20','confirmed':True}).status_code,200)
+        self.app.extensions['tools'].validate('nmap_scan',{'target':'192.168.1.20','ports':[80]},[])
+        for value in ['example.com','127.0.0.1;id','169.254.169.254']:
+            self.assertEqual(self.post('/api/targets',{'action':'add','kind':'nmap','value':value,'confirmed':True}).status_code,400)
+        with self.assertRaises(ScopeError):self.app.extensions['tools'].validate('web_headers',{'origin':'https://192.168.1.20'},[])
+
     def test_security_headers(self):
         response=self.client.get('/')
         self.assertIn("script-src 'self'",response.headers['Content-Security-Policy'])
@@ -199,6 +252,17 @@ class ProviderTests(unittest.TestCase):
     def test_all_provider_failure(self):
         opener=Mock();opener.open.side_effect=TimeoutError();self.router.opener=opener
         with self.assertRaises(ProviderError):self.router.complete([], 'vision',self.events.append,threading.Event())
+    def test_groq_sdk_uses_root_url_and_preserves_tool_payload(self):
+        self.s.providers['text']=[Provider('groq-main','https://api.groq.com/openai/v1','fixture-key','fixture-model',True)]
+        sdk=Mock();sdk.chat.completions.create.return_value.model_dump.return_value={'choices':[{'message':{'role':'assistant','content':'ok'}}]}
+        with patch('app.providers.Groq') as factory:
+            factory.return_value.__enter__.return_value=sdk
+            result,_=self.router.complete([], 'text',self.events.append,threading.Event(),[{'type':'function'}])
+        self.assertEqual(factory.call_args.kwargs['base_url'],'https://api.groq.com')
+        self.assertEqual(factory.call_args.kwargs['max_retries'],0)
+        self.assertEqual(sdk.chat.completions.create.call_args.kwargs['tools'],[{'type':'function'}])
+        self.assertEqual(result['content'],'ok')
+
     def test_json_tool_response(self):
         response={'role':'assistant','content':None,'tool_calls':[{'id':'call1','type':'function','function':{'name':'knowledge_search','arguments':'{"query":"SSRF"}'}}]}
         opener=Mock();opener.open.return_value=FakeResponse(response);self.router.opener=opener

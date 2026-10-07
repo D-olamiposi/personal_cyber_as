@@ -1,5 +1,7 @@
 # Sentinel — Personal Cybersecurity Assistant
 
+**Streamlit interface:** Run `python -m pip install -r requirements.txt`, configure a 24+ character `APP_ACCESS_TOKEN`, then `python -m streamlit run streamlit_app.py`. See [STREAMLIT_DEPLOYMENT.md](STREAMLIT_DEPLOYMENT.md) for Codespaces and Community Cloud setup. The Flask instructions below remain available as an alternative.
+
 A local, single-owner Flask assistant connected to the knowledge base, with Markdown chat, image understanding, provider fallbacks and bounded assessment tools. No live targets have been assessed as part of building this package.
 
 ## Start on WSL / Linux / macOS

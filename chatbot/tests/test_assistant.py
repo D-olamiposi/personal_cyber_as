@@ -275,6 +275,12 @@ class AdapterTests(unittest.TestCase):
         from app.tools import ToolRunner
         self.temp=tempfile.TemporaryDirectory();self.s=settings(self.temp.name);self.store=Store(self.s.data_dir);self.runner=ToolRunner(self.s,self.store)
     def tearDown(self):self.temp.cleanup()
+    def test_disabled_nmap_is_not_executable_or_advertised(self):
+        self.s.enable_nmap=False
+        with patch('app.tools.shutil.which',return_value='/fixture/nmap'):
+            self.assertNotIn('nmap_scan',[item['function']['name'] for item in self.runner.schemas()])
+        with self.assertRaises(ScopeError):self.runner.validate('nmap_scan',{'target':'127.0.0.1','ports':[80]},[])
+
     def test_http_headers_no_redirects_or_cookie_capture(self):
         response=Mock();response.status=302;response.getheaders.return_value=[('Server','test'),('Set-Cookie','secret=value'),('Location','https://outside.example'),('Content-Type','text/html')];response.read.return_value=b'content'
         connection=Mock();connection.getresponse.return_value=response;connection.peer_cert={'notAfter':'Jan 1 2030'}

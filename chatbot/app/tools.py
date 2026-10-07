@@ -134,7 +134,7 @@ class ToolRunner:
             self.settings.scopes=config
         return self.capabilities()
     def capabilities(self):
-        return {'tools':[{'name':s['function']['name'],'available':s['function']['name']!='nmap_scan' or bool(shutil.which('nmap'))} for s in SCHEMAS],
+        return {'tools':[{'name':s['function']['name'],'available':s['function']['name']!='nmap_scan' or (self.settings.enable_nmap and bool(shutil.which('nmap')))} for s in SCHEMAS],
                 'web_origins':sorted(self.scope.origins),'nmap_targets':sorted(self.scope.targets),'nmap_ports':sorted(self.scope.ports)}
     def schemas(self):
         available={x['name'] for x in self.capabilities()['tools'] if x['available']}
@@ -144,7 +144,9 @@ class ToolRunner:
         if not isinstance(name,str) or name not in expected or not isinstance(args,dict) or set(args)!=expected[name]:raise ScopeError('Unknown tool or invalid argument fields')
         if name=='knowledge_search' and (not isinstance(args['query'],str) or not 1<=len(args['query'])<=2000):raise ScopeError('Query must contain 1..2000 characters')
         if name in ('web_headers','dns_lookup'):self.scope.origin(args['origin'])
-        if name=='nmap_scan':self.scope.scan(args['target'],args['ports'])
+        if name=='nmap_scan':
+            if not self.settings.enable_nmap:raise ScopeError('Nmap execution is disabled in this interface')
+            self.scope.scan(args['target'],args['ports'])
         if name=='image_metadata' and args['image_id'] not in image_ids:raise ScopeError('Image must be attached to this request')
     def run(self,name,args,cancel,event,image_ids=None,record=None):
         self.validate(name,args,image_ids or [])

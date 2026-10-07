@@ -30,9 +30,10 @@ class Settings:
     max_steps: int=4
     max_tool_calls: int=6
     max_jobs: int=8
+    enable_nmap: bool=True
 
     @classmethod
-    def load(cls):
+    def load(cls,validate_web=True):
         data=Path(os.environ.get('APP_DATA_DIR',CHATBOT/'runtime')).resolve()
         provider_path=Path(os.environ.get('PROVIDERS_FILE',CHATBOT/'config/providers.json'))
         if not provider_path.exists():provider_path=CHATBOT/'config/providers.example.json'
@@ -56,10 +57,10 @@ class Settings:
         host=os.environ.get('APP_HOST','127.0.0.1')
         token=os.environ.get('APP_ACCESS_TOKEN','')
         secure=os.environ.get('APP_COOKIE_SECURE','false').lower()=='true'
-        if host not in ('127.0.0.1','localhost','::1') and (len(token)<24 or not secure):
+        if validate_web and host not in ('127.0.0.1','localhost','::1') and (len(token)<24 or not secure):
             raise ValueError('Remote binding requires a 24+ character access token and secure cookies behind HTTPS')
         trusted=[x.strip() for x in os.environ.get('APP_TRUSTED_HOSTS','localhost,127.0.0.1,[::1]').split(',') if x.strip()]
-        if any(x not in ('localhost','127.0.0.1','[::1]') for x in trusted) and (len(token)<24 or not secure):
+        if validate_web and any(x not in ('localhost','127.0.0.1','[::1]') for x in trusted) and (len(token)<24 or not secure):
             raise ValueError('Nonlocal trusted hosts require an owner token and HTTPS secure cookies')
         if not trusted or any(x.startswith('.') or x=='*' for x in trusted):
             raise ValueError('Configure exact trusted hostnames')

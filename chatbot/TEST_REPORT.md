@@ -52,3 +52,7 @@ The interrupted deliverable was recovered from its saved archive. All 29 backend
 37 backend tests plus eight knowledge-base tests pass (45 total). Seven new backend tests exercise immediate authorization, persistence, duplicate normalization, owner/CSRF enforcement, invalid target rejection, separate Nmap scope, revocation, active-job conflicts, and failed-write rollback. Existing evidence tests compare download bytes with the persisted SHA-256. JavaScript syntax checking passes. The user's Groq SDK fix is retained. No live provider call or website scan was made during this update. Browser verification status is recorded separately below.
 
 An additional mocked Groq SDK test confirms the API root URL, disabled SDK retries, and preserved tool payload. Fresh browser checks could not run: Chromium is not installed and its download failed. Desktop/mobile layout and clipboard/Web Crypto controls therefore need a browser check after installation; no fresh browser success is claimed.
+
+## Streamlit conversion — 2026-10-07
+
+The Streamlit AppTest flow verifies the owner login, target creation, local knowledge-tool submission, saved evidence display, and hash verification without live provider requests. 38 backend and eight knowledge-base tests pass (46 total), including enforcement of disabled Nmap execution. Browser pixel/layout and clipboard actions, hosted deployment, live provider calls and live Nmap execution have not been verified by this conversion.

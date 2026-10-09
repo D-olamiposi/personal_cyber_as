@@ -25,7 +25,7 @@ from app.uploads import ImageUploads
 st.set_page_config(page_title="Sentinel", page_icon="🛡️", layout="wide")
 load_dotenv(ROOT / "chatbot/.env")
 try:
-    for name in ("APP_ACCESS_TOKEN", "GROQ_API_KEY", "XAI_API_KEY", "GROQ_CHAT_MODEL", "GROQ_FALLBACK_MODEL", "GROQ_VISION_MODEL", "XAI_CHAT_MODEL", "XAI_VISION_MODEL", "APP_DATA_DIR", "SCOPES_FILE", "PROVIDERS_FILE", "STREAMLIT_ENABLE_NMAP"):
+    for name in ("APP_ACCESS_TOKEN", "GROQ_API_KEY", "XAI_API_KEY", "GROQ_CHAT_MODEL", "GROQ_FALLBACK_MODEL", "GROQ_VISION_MODEL", "XAI_CHAT_MODEL", "XAI_VISION_MODEL", "APP_DATA_DIR", "SCOPES_FILE", "PROVIDERS_FILE", "STREAMLIT_ENABLE_NMAP", "RUNNER_URL", "RUNNER_TOKEN", "LOAD_TEST_ORIGINS"):
         if name in st.secrets:
             value = st.secrets[name]
             os.environ[name] = str(value).lower() if isinstance(value, bool) else str(value)
@@ -79,7 +79,7 @@ busy = active is not None
 with st.sidebar:
     st.title("Sentinel")
     st.caption("Personal security workspace")
-    view = st.radio("Workspace", ["Chat", "Assessments", "Targets"], key="workspace_view")
+    view = st.radio("Workspace", ["Chat", "Assessments", "Targets", "Readiness", "Code & terminal"], key="workspace_view")
     if st.button("New conversation", disabled=busy):
         st.session_state.chat_id = store.create_chat()
         st.session_state.upload_version = st.session_state.get("upload_version", 0) + 1
@@ -97,7 +97,7 @@ with st.sidebar:
         st.rerun()
     st.caption("Cloud runtime files are not durable backups. Download important evidence and conversations.")
 
-st.title({"Chat": "Chat", "Assessments": "Run an assessment", "Targets": "Manage targets"}[view])
+st.title({"Chat": "Chat", "Assessments": "Run an assessment", "Targets": "Manage targets", "Readiness": "DDoS readiness", "Code & terminal": "Code & terminal"}[view])
 if view == "Chat" and not app.settings.providers["text"]:
     st.info("Add a model API key to enable chat. Local knowledge search is available under Assessments.")
 if view == "Targets":
@@ -284,3 +284,54 @@ if view == "Chat":
         except ValueError as exc:
             st.error(str(exc))
     
+
+if view == "Readiness":
+    st.caption("Review protection settings and collect a small availability sample. This cannot certify DDoS resilience.")
+    checks = ["CDN/provider DDoS protection verified in provider console", "Rate limits configured for expensive and authentication endpoints", "Request body limits and upstream timeouts configured", "Caching enabled where appropriate", "Traffic/error alerts and response contacts configured", "Recovery and backup procedure exercised"]
+    answers = {item: st.selectbox(item, ["Unknown", "Verified", "Needs work"], key="readiness_"+str(i)) for i,item in enumerate(checks)}
+    st.download_button("Download readiness review", json.dumps(answers, indent=2), "readiness-review.json", "application/json")
+    with st.expander("Small availability sample"):
+        st.caption("Maximum five HTTPS root requests at one per second, one connection at a time. Separate lab/staging approval required. Set LOAD_TEST_ORIGINS to comma-separated approved origins in owner configuration.")
+        from app.readiness import sample
+        from app.tools import canonical_origin
+        try:
+            origins = [canonical_origin(x.strip()) for x in os.environ.get("LOAD_TEST_ORIGINS", "").split(",") if x.strip()]
+        except ValueError:
+            origins = []
+            st.error("Invalid LOAD_TEST_ORIGINS configuration.")
+        chosen = st.selectbox("Approved lab/staging origin", origins) if origins else None
+        confirmed = st.checkbox("I have permission for this low-rate sample on this lab/staging target.")
+        if st.button("Collect sample", disabled=not chosen or not confirmed or busy):
+            output = st.empty()
+            try:
+                result = sample(chosen, origins, event=lambda row: output.json(row))
+                st.session_state.availability_result = result
+            except (ValueError, OSError) as exc:
+                st.error("Sample stopped: " + str(exc))
+        if "availability_result" in st.session_state:
+            result = st.session_state.availability_result
+            st.json(result)
+            st.download_button("Download availability sample", json.dumps(result, indent=2), "availability-sample.json", "application/json")
+
+if view == "Code & terminal":
+    st.caption("Run a Python cell or Linux shell command in a fresh container on your separate runner. Output streams below. No network, host files, installed cyber tools, or persistent terminal sessions.")
+    from app.workbench import execute
+    mode = st.radio("Execution mode", ["python", "shell"], format_func=lambda x: "Python cell" if x == "python" else "Linux terminal")
+    code = st.text_area("Code" if mode == "python" else "Command", value="print('Hello from Linux')" if mode == "python" else "uname -a; id; pwd", height=220, key="cell_"+mode, max_chars=12000)
+    configured = bool(os.environ.get("RUNNER_URL") and os.environ.get("RUNNER_TOKEN"))
+    if not configured:
+        st.info("Connect a runner using RUNNER_URL and RUNNER_TOKEN. See RUNNER_SETUP.md. There is no local execution fallback.")
+    if st.button("Run cell" if mode == "python" else "Run command", disabled=not configured or not code or busy):
+        output = st.empty(); text = ""
+        try:
+            for item in execute(mode, code):
+                text += item.get("output", "")
+                output.code(text or "Starting container…", language=None)
+                if item.get("done"):
+                    st.write("Result:", item["reason"], "Exit code:", item.get("exit_code"))
+            st.session_state.cell_output = text
+        except (ValueError, OSError) as exc:
+            st.error("Runner unavailable or execution interrupted: " + type(exc).__name__)
+        st.code(text, language=None)
+    elif st.session_state.get("cell_output"):
+        st.code(st.session_state.cell_output, language=None)

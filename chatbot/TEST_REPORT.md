@@ -60,3 +60,7 @@ The Streamlit AppTest flow verifies the owner login, target creation, local know
 ## Simplified Streamlit navigation — 2026-10-07
 
 The AppTest flow verifies navigation between Chat, Targets, and Assessments, target addition, local knowledge search and hash verification. All 46 existing backend/knowledge tests pass. Native browser layout remains unverified. Permissions, provider routing and executable tool coverage are unchanged.
+
+## October 9 workbench update
+
+38 chatbot tests, 8 knowledge-base tests, and 4 workbench validation tests passed. Streamlit AppTest covers existing login/targets/evidence and the new readiness and Python/shell views with unconfigured execution disabled. Docker is unavailable here: real container runs, resource enforcement on the chosen host, proxy streaming, and browser layout require host verification. No live target load sample was performed.

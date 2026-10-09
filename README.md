@@ -150,3 +150,7 @@ Each recorded evidence card displays the backend SHA-256 of the exact JSON downl
 ## Updating an existing installation
 
 Stop the app and copy the updated `chatbot/app/tools.py`, `chatbot/app/web.py`, `chatbot/app/engine.py`, `chatbot/static/app.js`, `chatbot/static/app.css`, and `chatbot/templates/index.html` into your project. Keep your existing `.env`, provider configuration, `scopes.json`, and `chatbot/runtime/`. The uploaded Groq SDK transport fix is retained. Install requirements, restart once for the code update, and refresh the browser. Subsequent target changes do not need a restart.
+
+## Readiness and Linux workbench
+
+The Streamlit sidebar now includes a DDoS-readiness checklist, a separately approved five-request availability sample, and Python/shell cells with streamed output from a separate container runner. See [RUNNER_SETUP.md](RUNNER_SETUP.md). The runner is optional and disabled until configured.

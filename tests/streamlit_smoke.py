@@ -32,6 +32,16 @@ assert any(x.label=='Evidence downloads' for x in at.expander)
 next(x for x in at.button if x.label=='Verify evidence').click().run()
 assert any('Verified:' in x.value for x in at.success)
 assert not at.exception,at.exception
+next(x for x in at.radio if x.label=='Workspace').set_value('Readiness').run()
+assert not at.exception,at.exception
+assert any(x.label=='Collect sample' and x.disabled for x in at.button)
+next(x for x in at.radio if x.label=='Workspace').set_value('Code & terminal').run()
+assert not at.exception,at.exception
+assert any(x.label=='Run cell' and x.disabled for x in at.button)
+next(x for x in at.radio if x.label=='Execution mode').set_value('shell').run()
+assert not at.exception,at.exception
+assert any(x.label=='Run command' and x.disabled for x in at.button)
+print('New readiness and code/terminal views with unconfigured execution disabled: PASS')
 print('Streamlit login, targets, background local tool, evidence and hash verification: PASS')
 import streamlit as st
 st.cache_resource.clear()

@@ -64,3 +64,7 @@ The AppTest flow verifies navigation between Chat, Targets, and Assessments, tar
 ## October 9 workbench update
 
 38 chatbot tests, 8 knowledge-base tests, and 4 workbench validation tests passed. Streamlit AppTest covers existing login/targets/evidence and the new readiness and Python/shell views with unconfigured execution disabled. Docker is unavailable here: real container runs, resource enforcement on the chosen host, proxy streaming, and browser layout require host verification. No live target load sample was performed.
+
+## EC2 and Burp preparation
+
+52 tests passed (38 chatbot, 8 knowledge-base, 6 runner/workbench validation). Streamlit AppTest also passed login, target management, evidence verification, readiness, code/shell, and the EC2/Burp setup view. Both Ubuntu setup scripts passed bash syntax checks. EC2 launch, package/image installation, TLS, actual Docker execution, and Burp desktop login remain unverified until deployment on AWS.

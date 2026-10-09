@@ -71,3 +71,7 @@ The Streamlit smoke script uses a temporary runtime and test owner token; it doe
 ## Simplified navigation
 
 Choose Chat, Assessments, or Targets from the sidebar. Chat shows messages and the composer; attachments are optional. Assessments contains the supported manual checks with readable result summaries. Targets contains saved scope management. Technical output, hashes, model details and copyable message text remain accessible in collapsed sections.
+
+## Optional EC2 execution service
+
+Deploy the separate instance using AWS_RUNNER_SETUP.md. Add RUNNER_URL (HTTPS origin) and RUNNER_TOKEN to app secrets, then use Code & terminal → Check EC2 runner connection. Tools setup includes package-build commands and Burp instructions. Burp is owner-operated through remote desktop, not an automatic chatbot adapter.

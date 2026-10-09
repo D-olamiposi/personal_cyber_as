@@ -11,7 +11,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 LOCK = threading.Lock()
 TOKEN = os.environ.get('RUNNER_TOKEN', '')
-IMAGE = 'python:3.12-slim'
+IMAGE = 'sentinel-tools:local'
 
 def command(mode, code, name):
     if mode not in ('python', 'shell') or not isinstance(code, str) or not 1 <= len(code) <= 12000:
@@ -26,6 +26,23 @@ def command(mode, code, name):
 
 class Handler(BaseHTTPRequestHandler):
     def log_message(self, *args): pass
+    def do_GET(self):
+        self.connection.settimeout(5)
+        if not TOKEN or not hmac.compare_digest(self.headers.get('Authorization', ''), 'Bearer ' + TOKEN):
+            self.send_error(401); return
+        if self.path != '/health': self.send_error(404); return
+        available = False
+        try:
+            available = subprocess.run(['docker', 'image', 'inspect', IMAGE], stdout=subprocess.DEVNULL,
+                                       stderr=subprocess.DEVNULL, timeout=3).returncode == 0
+        except (OSError, subprocess.TimeoutExpired): pass
+        body = json.dumps({'service':'sentinel-runner', 'image':IMAGE, 'image_ready':available,
+                           'execution':'offline disposable container', 'network_enabled':False,
+                           'tools_in_image':['python','bash','nmap','curl','dig','jq'],
+                           'limits':{'seconds':15,'output_bytes':65536,'memory_mb':128},
+                           'burp':'Separate remote desktop; not a runner API tool'}).encode()
+        self.send_response(200); self.send_header('Content-Type','application/json')
+        self.send_header('Content-Length',str(len(body))); self.end_headers(); self.wfile.write(body)
     def do_POST(self):
         self.connection.settimeout(5)
         if not TOKEN or not hmac.compare_digest(self.headers.get('Authorization', ''), 'Bearer ' + TOKEN):

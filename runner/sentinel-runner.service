@@ -1,0 +1,22 @@
+[Unit]
+Description=Sentinel single-owner container runner
+After=docker.service network-online.target
+Requires=docker.service
+
+[Service]
+Type=simple
+User=sentinel-runner
+Group=sentinel-runner
+SupplementaryGroups=docker
+EnvironmentFile=/etc/sentinel-runner.env
+WorkingDirectory=/opt/sentinel-runner
+ExecStart=/usr/bin/python3 /opt/sentinel-runner/server.py
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+
+[Install]
+WantedBy=multi-user.target

@@ -79,7 +79,7 @@ busy = active is not None
 with st.sidebar:
     st.title("Sentinel")
     st.caption("Personal security workspace")
-    view = st.radio("Workspace", ["Chat", "Assessments", "Targets", "Readiness", "Code & terminal"], key="workspace_view")
+    view = st.radio("Workspace", ["Chat", "Assessments", "Targets", "Readiness", "Code & terminal", "Tools setup"], key="workspace_view")
     if st.button("New conversation", disabled=busy):
         st.session_state.chat_id = store.create_chat()
         st.session_state.upload_version = st.session_state.get("upload_version", 0) + 1
@@ -97,7 +97,7 @@ with st.sidebar:
         st.rerun()
     st.caption("Cloud runtime files are not durable backups. Download important evidence and conversations.")
 
-st.title({"Chat": "Chat", "Assessments": "Run an assessment", "Targets": "Manage targets", "Readiness": "DDoS readiness", "Code & terminal": "Code & terminal"}[view])
+st.title({"Chat": "Chat", "Assessments": "Run an assessment", "Targets": "Manage targets", "Readiness": "DDoS readiness", "Code & terminal": "Code & terminal", "Tools setup": "Tools & EC2 setup"}[view])
 if view == "Chat" and not app.settings.providers["text"]:
     st.info("Add a model API key to enable chat. Local knowledge search is available under Assessments.")
 if view == "Targets":
@@ -314,8 +314,19 @@ if view == "Readiness":
             st.download_button("Download availability sample", json.dumps(result, indent=2), "availability-sample.json", "application/json")
 
 if view == "Code & terminal":
-    st.caption("Run a Python cell or Linux shell command in a fresh container on your separate runner. Output streams below. No network, host files, installed cyber tools, or persistent terminal sessions.")
-    from app.workbench import execute
+    st.caption("Run a Python cell or Linux shell command in a fresh container on your separate runner. Output streams below. Preinstalled tools are available after building the EC2 image. These code cells have no network, host files, or persistent terminal sessions.")
+    from app.workbench import execute, health
+    if st.button("Check EC2 runner connection"):
+        try:
+            status = health()
+            if status.get("image_ready"):
+                st.success("Runner reachable; tools image is present. Run a small cell to verify execution.")
+            else:
+                st.warning("Runner reachable, but the tools image needs to be built on EC2.")
+            with st.expander("Runner capabilities"):
+                st.json(status)
+        except (ValueError, OSError):
+            st.error("Could not verify the runner. Check its HTTPS endpoint, token, and EC2 service.")
     mode = st.radio("Execution mode", ["python", "shell"], format_func=lambda x: "Python cell" if x == "python" else "Linux terminal")
     code = st.text_area("Code" if mode == "python" else "Command", value="print('Hello from Linux')" if mode == "python" else "uname -a; id; pwd", height=220, key="cell_"+mode, max_chars=12000)
     configured = bool(os.environ.get("RUNNER_URL") and os.environ.get("RUNNER_TOKEN"))
@@ -335,3 +346,25 @@ if view == "Code & terminal":
         st.code(text, language=None)
     elif st.session_state.get("cell_output"):
         st.code(st.session_state.cell_output, language=None)
+
+if view == "Tools setup":
+    st.caption("Streamlit is the frontend. Your separate Ubuntu EC2 instance runs the containers and optional Burp desktop.")
+    st.markdown("**1. Configure the connection**")
+    st.code('RUNNER_URL = "https://your-runner-domain.example"\nRUNNER_TOKEN = "your-generated-runner-token"', language="toml")
+    st.caption("Put these values in Streamlit deployment secrets, or chatbot/.env for local development. Never enter AWS access keys here.")
+    st.markdown("**2. Build the tools image on EC2**")
+    st.code("sudo bash runner/setup-ec2.sh", language="bash")
+    st.write("Image packages: Python, Bash, Nmap, curl, dig, jq, requests, and Pillow. Installing a tool does not make it a chat adapter. Offline cells can inspect versions and process data; they cannot scan websites.")
+    st.code("nmap --version\ncurl --version\ndig -v\njq --version", language="bash")
+    st.markdown("**3. Add owner-approved packages**")
+    st.write("Edit runner/python-packages.txt for Python libraries or runner/Dockerfile for Linux packages, then rebuild on EC2. No unrestricted pip/apt installation is available inside a code cell.")
+    st.code("sudo docker build -t sentinel-tools:local runner", language="bash")
+    with st.expander("Burp Suite · remote desktop"):
+        st.write("Burp is a separate graphical application on EC2. It is not automatically controlled by the chatbot or launched inside a 15-second cell. Install Community Edition using PortSwigger's native Linux installer, or use Professional with your license.")
+        st.code("sudo bash runner/setup-burp-desktop.sh\nsudo passwd burp-user", language="bash")
+        st.write("Connect Windows Remote Desktop through an SSH or AWS Session Manager tunnel. Do not open port 3389 or Burp's proxy port publicly. Use Burp's browser on the remote desktop and set the authorized target scope in Burp itself.")
+        st.link_button("Official Burp download", "https://portswigger.net/burp/releases")
+    for filename in ("AWS_RUNNER_SETUP.md", "BURP_SETUP.md"):
+        path = ROOT / filename
+        if path.is_file():
+            st.download_button("Download " + filename, path.read_text(), file_name=filename, mime="text/markdown")

@@ -154,3 +154,7 @@ Stop the app and copy the updated `chatbot/app/tools.py`, `chatbot/app/web.py`, 
 ## Readiness and Linux workbench
 
 The Streamlit sidebar now includes a DDoS-readiness checklist, a separately approved five-request availability sample, and Python/shell cells with streamed output from a separate container runner. See [RUNNER_SETUP.md](RUNNER_SETUP.md). The runner is optional and disabled until configured.
+
+## Separate EC2 and Burp desktop
+
+Use [AWS_RUNNER_SETUP.md](AWS_RUNNER_SETUP.md) for the separate Ubuntu 24.04 instance. The **Tools setup** Streamlit view explains preinstalled packages and controlled image rebuilds. **Code & terminal** includes an authenticated connection check. [BURP_SETUP.md](BURP_SETUP.md) and the desktop script prepare private remote desktop access for owner-operated Burp Suite. No Burp chat adapter or AWS instance is automatically created.

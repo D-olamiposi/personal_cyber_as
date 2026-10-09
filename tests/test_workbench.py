@@ -20,6 +20,15 @@ class WorkbenchTests(unittest.TestCase):
         self.assertEqual(args[-3:],['/bin/bash','-lc','echo hello'])
         with self.assertRaises(ValueError): server.command('unknown','x','test')
         with self.assertRaises(ValueError): server.command('python','x'*12001,'test')
+    def test_image_contains_expected_tools(self):
+        self.assertEqual(server.IMAGE, 'sentinel-tools:local')
+        dockerfile=(ROOT/'runner/Dockerfile').read_text()
+        for package in ('nmap','curl','dnsutils','jq'):
+            self.assertIn(package,dockerfile)
+    def test_health_validation(self):
+        from app.workbench import health
+        with patch.dict(os.environ,{'RUNNER_URL':'https://','RUNNER_TOKEN':'x'*32}):
+            with self.assertRaises(ValueError): health()
     def test_remote_http_rejected(self):
         with patch.dict(os.environ,{'RUNNER_URL':'http://remote.example','RUNNER_TOKEN':'x'*32}):
             with self.assertRaises(ValueError): list(execute('python','print(1)'))
